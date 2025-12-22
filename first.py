@@ -125,7 +125,8 @@ st.dataframe(shops[["店铺名称", "地址", "评分", "好评率", "人均消�
 st.subheader("🍲 今日午餐推荐")
 st.write("**复记老友粉(中山路店)** - 经典老友粉（酸辣鲜香，地道南宁味）")
 st.image(
-    "https://img1.baidu.com/it/u=3444030644,3544334060&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=375",
+    "https://pic.nximg.cn/file/20170424/4859077_095226310893_2.jpg",
     caption="复记老友粉",
     use_container_width=True
 )
+
