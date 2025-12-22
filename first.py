@@ -1,36 +1,46 @@
 import streamlit as st
 
-# 设置网页标题（网站名称）
-st.set_page_config(page_title="相册网站", page_icon="🖼️")
+# 设置网页标题为“动物相册网站”
+st.set_page_config(page_title="动物相册网站", page_icon="🐾")
 
-# 图片列表（可替换为本地图片路径或自定义图片链接）
-image_list = [
-    "https://picsum.photos/seed/album1/600/400",  # 示例图1
-    "https://picsum.photos/seed/album2/600/400",  # 示例图2
-    "https://picsum.photos/seed/album3/600/400",  # 示例图3
-    "https://picsum.photos/seed/album4/600/400"   # 示例图4（可按需增减）
+# 你的动物图片列表（包含图片链接和描述）
+image_ua = [
+    {
+        'url': 'https://cdn.britannica.com/73/9173-050-9D9EA4BA.jpg',
+        'text': '鱼'
+    },
+    {
+        'url': 'https://images.saymedia-content.com/image/upload/share/Mt0MjYjAvtMAzMJYJMQ0/10-colourful-birds.jpg',
+        'text': '鸟'
+    },
+    {
+        'url': 'https://www.baltana.com/files/wallpapers-2/Cute-Cat-Images-07756.jpg',
+        'text': '猫'
+    }
 ]
 
-# 初始化会话状态，记录当前显示的图片索引
-if "current_idx" not in st.session_state:
-    st.session_state.current_idx = 0
+# 初始化会话状态，记录当前图片索引
+if 'ind' not in st.session_state:
+    st.session_state['ind'] = 0
 
-# 显示网页标题（页面内可见）
-st.title("相册网站")
+# 页面标题
+st.title("动物相册网站")
 
-# 显示当前图片
-st.image(
-    image_list[st.session_state.current_idx],
-    caption=f"图片 {st.session_state.current_idx + 1}/{len(image_list)}"  # 显示图片序号
-)
+# 显示当前图片和描述
+current_img = image_ua[st.session_state['ind']]
+st.image(current_img['url'], caption=current_img['text'], use_column_width=True)
 
-# 按钮区域：上一张 + 下一张（横向排列）
+# 定义“上一张”功能
+def prevImg():
+    st.session_state['ind'] = (st.session_state['ind'] - 1) % len(image_ua)
+
+# 定义“下一张”功能
+def nextImg():
+    st.session_state['ind'] = (st.session_state['ind'] + 1) % len(image_ua)
+
+# 按钮区域
 col1, col2 = st.columns(2)
 with col1:
-    if st.button("上一张"):
-        # 循环切换：第一张的上一张是最后一张
-        st.session_state.current_idx = (st.session_state.current_idx - 1) % len(image_list)
+    st.button('上一张', use_container_width=True, on_click=prevImg)
 with col2:
-    if st.button("下一张"):
-        # 循环切换：最后一张的下一张是第一张
-        st.session_state.current_idx = (st.session_state.current_idx + 1) % len(image_list)
+    st.button('下一张', use_container_width=True, on_click=nextImg)
