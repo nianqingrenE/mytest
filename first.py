@@ -10,7 +10,7 @@ image_ua = [
         'text': '鱼'
     },
     {
-        'url': 'https://pic.nximg.cn/20131205/3822951_151249097000_2.jpg',
+        'url': 'https://img95.699pic.com/photo/60059/3325.jpg_wh300.jpg',
         'text': '鸟'
     },
     {
@@ -44,3 +44,4 @@ with col1:
     st.button('上一张', use_container_width=True, on_click=prevImg)
 with col2:
     st.button('下一张', use_container_width=True, on_click=nextImg)
+
