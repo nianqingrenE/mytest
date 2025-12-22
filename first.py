@@ -10,7 +10,7 @@ image_ua = [
         'text': '鱼'
     },
     {
-        'url': 'https://images.saymedia-content.com/image/upload/share/Mt0MjYjAvtMAzMJYJMQ0/10-colourful-birds.jpg',
+        'url': 'https://pic.nximg.cn/20131205/3822951_151249097000_2.jpg',
         'text': '鸟'
     },
     {
