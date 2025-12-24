@@ -1,4 +1,4 @@
-三、网络import streamlit as st
+import streamlit as st
 
 # 设置页面标题（显示在浏览器标签页上）
 st.set_page_config(page_title="视频中心")
@@ -53,3 +53,4 @@ for i, col in enumerate(cols):
             f"第{i+1}集", 
             on_click=playVideo, 
             args=[i]  # 传递索引参数
+
