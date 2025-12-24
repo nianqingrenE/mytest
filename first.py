@@ -7,25 +7,25 @@ if 'current_song_index' not in st.session_state:
 # 三首歌曲信息
 songs = [
     {
-        "title": "Bohemian Rhapsody",
-        "artist": "Queen",
+        "title": "恭喜发财",
+        "artist": "mchaCheers",
         "duration": "5:55",
-        "cover_url": "https://upload.wikimedia.org/wikipedia/en/4/4d/Bohemian_Rhapsody.png",
-        "audio_url": "你的歌曲1路径"  # 请替换为你的歌曲路径
+        "cover_url": "https://p1.music.126.net/qDDB6HshQrqwyKzE9778QA==/109951172450091661.jpg?param=130y130",
+        "audio_url": "https://music.163.com/#/song?id=3329668871" 
     },
     {
-        "title": "Hotel California",
-        "artist": "Eagles", 
-        "duration": "6:30",
-        "cover_url": "https://upload.wikimedia.org/wikipedia/en/4/49/Hotelcalifornia.jpg",
-        "audio_url": "你的歌曲2路径"  # 请替换为你的歌曲路径
+        "title": "银色荒原",
+        "artist": "裘德", 
+        "duration": "4:00",
+        "cover_url": "https://p2.music.126.net/r1AKMenByofI7Qqj3E5EqQ==/109951172091080013.jpg?param=130y130",
+        "audio_url": "https://music.163.com/#/song?id=2750712892"  
     },
     {
-        "title": "Imagine",
-        "artist": "John Lennon",
-        "duration": "3:01",
-        "cover_url": "https://upload.wikimedia.org/wikipedia/en/4/45/Imagine_cover.jpg",
-        "audio_url": "你的歌曲3路径"  # 请替换为你的歌曲路径
+        "title": "春天的临终",
+        "artist": "裘德",
+        "duration": "4:42",
+        "cover_url": "https://p2.music.126.net/r1AKMenByofI7Qqj3E5EqQ==/109951172091080013.jpg?param=130y130",
+        "audio_url": "https://music.163.com/#/song?id=2733730415" 
     }
 ]
 
@@ -63,7 +63,7 @@ st.write("使用Streamlit制作的简单音乐播放器，支持切歌和基本�
 st.divider()
 
 # 主内容区域
-col1, col2 = st.columns([1, 1])
+col1, col2 = st.columns([1, 2])
 
 with col1:
     st.write("**专辑封面**")
@@ -86,3 +86,4 @@ with col2:
 # 音频播放器
 st.divider()
 st.audio(current_song["audio_url"], format="audio/mp3")
+
