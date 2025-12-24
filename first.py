@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="音乐", page_icon="🐾")
 
 # 你的动物图片列表（包含图片链接和描述）
-audio_file = [
+audio_fitle = [
     {
         'audio_file = 'https://music.163.com/song/media/outer/url?id=2160759088.mp3'',
         'text': '捉迷藏'
@@ -43,6 +43,7 @@ with col1:
     st.button('上一张', use_container_width=True, on_click=prevImg)
 with col2:
     st.button('下一张', use_container_width=True, on_click=nextImg)
+
 
 
 
