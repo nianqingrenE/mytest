@@ -1,56 +1,93 @@
 import streamlit as st
+from PIL import Image
+import io
 
-# 设置页面标题（显示在浏览器标签页上）
-st.set_page_config(page_title="视频中心")
+# 设置页面配置
+st.set_page_config(page_title="个人简历生成器", layout="wide")
 
-# 定义视频列表，包含视频URL和标题
-video_arr = [
-    {
-        'url': "https://www.w3school.com.cn/example/html5/mov_bbb.mp4",
-        'title': "第一集"
-    },
-    {
-        'url': "https://www.w3schools.com/html/movie.mp4",
-        'title': "第二集"
-    },
-    {
-        'url': "https://media.w3.org/2010/05/sintel/trailer.mp4",
-        'title': "第三集"
-    },
-]
+# 标题
+st.title("📄 个人简历生成器")
 
-# 按钮点击事件处理函数
-def playVideo(i):
-    """切换到指定视频集数
-    参数:
-        i (int): 视频索引 (0, 1, 2...)
-    """
-    st.session_state['ind'] = i  # 更新当前播放的视频索引
-    st.title(video_arr[i]['title'])  # 更新页面标题为当前视频标题
+# 初始化session_state
+if 'name' not in st.session_state:
+    st.session_state.name = ""
+if 'position' not in st.session_state:
+    st.session_state.position = ""
+if 'phone' not in st.session_state:
+    st.session_state.phone = ""
+if 'email' not in st.session_state:
+    st.session_state.email = ""
+if 'personal_intro' not in st.session_state:
+    st.session_state.personal_intro = ""
+if 'skills' not in st.session_state:
+    st.session_state.skills = []
 
-# 初始化会话状态（如果不存在ind变量）
-if 'ind' not in st.session_state:
-    st.session_state['ind'] = 0  # 默认播放第一集
+# 创建两列布局
+col1, col2 = st.columns([1, 2])
 
-# 显示当前播放的视频标题
-st.title(video_arr[st.session_state['ind']]['title'])
+# 左侧表单区域
+with col1:
+    st.subheader("📝 个人信息表单")
+    
+    st.session_state.name = st.text_input("姓名")
+    st.session_state.position = st.text_input("职位")
+    st.session_state.phone = st.text_input("电话")
+    st.session_state.email = st.text_input("邮箱")
+    
+    education = st.selectbox("学历", ["", "专科", "本科", "硕士", "博士"])
+    
+    st.session_state.skills = st.multiselect(
+        "技能（可多选）",
+        ["Java", "HTML/CSS", "机器学习", "Python", "JavaScript", "数据库", "云计算", "数据分析", "人工智能", "网络安全"]
+    )
+    
+    work_experience = st.slider("工作经验（年）", 0, 30, 0)
+    
+    st.session_state.personal_intro = st.text_area("个人简介", height=150)
+    
+    uploaded_file = st.file_uploader("上传个人照片", type=["jpg", "jpeg", "png"])
 
-# 显示当前视频播放器
-st.video(video_arr[st.session_state['ind']]['url'])
+# 右侧预览区域
+with col2:
+    st.subheader("👀 简历预览")
+    
+    if st.session_state.name:
+        st.header(st.session_state.name)
+    else:
+        st.header("姓名")
+    
+    if st.session_state.position:
+        st.subheader(st.session_state.position)
+    else:
+        st.subheader("职位")
+    
+    # 显示上传的照片
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, width=150)
+    
+    # 联系信息
+    st.markdown("### 联系方式")
+    if st.session_state.phone:
+        st.write(f"📱 电话: {st.session_state.phone}")
+    if st.session_state.email:
+        st.write(f"📧 邮箱: {st.session_state.email}")
+    if education:
+        st.write(f"🎓 学历: {education}")
+    if work_experience > 0:
+        st.write(f"💼 工作经验: {work_experience} 年")
+    
+    # 专业技能
+    if st.session_state.skills:
+        st.markdown("### 专业技能")
+        for skill in st.session_state.skills:
+            st.write(f"- {skill}")
+    
+    # 个人简介
+    if st.session_state.personal_intro:
+        st.markdown("### 个人简介")
+        st.write(st.session_state.personal_intro)
 
-# 创建水平排列的按钮栏（每个按钮占一列）
-# 使用st.columns创建与视频数量相同的列
-cols = st.columns(len(video_arr))
-
-# 为每个视频集数创建按钮
-for i, col in enumerate(cols):
-    # 将按钮放入当前列中
-    with col:
-        # 创建按钮，显示"第X集"文本
-        # on_click: 点击时触发playVideo函数
-        # args: 传递当前索引i作为参数
-        st.button(
-            f"第{i+1}集", 
-            on_click=playVideo, 
-            args=[i]  # 传递索引参数
-        )
+# 页脚提示
+st.markdown("---")
+st.caption("提示：在左侧表单中填写您的信息，右侧将实时显示简历预览")
