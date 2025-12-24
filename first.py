@@ -31,11 +31,11 @@ st.audio(audio_file)
 
 # 定义“上一张”功能
 def prevImg():
-    st.session_state['ind'] = (st.session_state['ind'] - 1) % len(image_ua)
+    st.session_state['ind'] = (st.session_state['ind'] - 1) % len(audio_file)
 
 # 定义“下一张”功能
 def nextImg():
-    st.session_state['ind'] = (st.session_state['ind'] + 1) % len(image_ua)
+    st.session_state['ind'] = (st.session_state['ind'] + 1) % len(audio_file)
 
 # 按钮区域
 col1, col2 = st.columns(2)
@@ -43,6 +43,7 @@ with col1:
     st.button('上一张', use_container_width=True, on_click=prevImg)
 with col2:
     st.button('下一张', use_container_width=True, on_click=nextImg)
+
 
 
 
