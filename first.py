@@ -22,6 +22,8 @@ if 'skills' not in st.session_state:
     st.session_state.skills = []
 if 'salary_range' not in st.session_state:
     st.session_state.salary_range = (0, 0)
+if 'gender' not in st.session_state:
+    st.session_state.gender = ""
 
 # 创建两列布局
 col1, col2 = st.columns([1, 2])
@@ -31,7 +33,17 @@ with col1:
     st.subheader("📝 个人信息表单")
     
     st.session_state.name = st.text_input("姓名")
-    st.session_state.position = st.text_input("职位")
+    
+    # 职位输入框，右侧添加说明
+    col_pos1, col_pos2 = st.columns([3, 1])
+    with col_pos1:
+        st.session_state.position = st.text_input("职位")
+    with col_pos2:
+        st.markdown("<small style='color: gray;'>职位</small>", unsafe_allow_html=True)
+    
+    # 添加性别选择
+    st.session_state.gender = st.radio("性别", ["", "男", "女", "其他"], index=0)
+    
     st.session_state.phone = st.text_input("电话")
     st.session_state.email = st.text_input("邮箱")
     
@@ -44,7 +56,7 @@ with col1:
     
     work_experience = st.slider("工作经验（年）", 0, 30, 0)
     
-    # 添加薪资范围滑块（与工作经验滑块风格一致）
+    # 薪资范围滑块
     st.session_state.salary_range = st.slider(
         "期望薪资范围（元/月）",
         0, 100000, (5000, 20000),
@@ -65,8 +77,13 @@ with col2:
     else:
         st.header("姓名")
     
-    if st.session_state.position:
+    # 显示职位和性别
+    if st.session_state.position and st.session_state.gender:
+        st.subheader(f"{st.session_state.position} | {st.session_state.gender}")
+    elif st.session_state.position:
         st.subheader(st.session_state.position)
+    elif st.session_state.gender:
+        st.subheader(st.session_state.gender)
     else:
         st.subheader("职位")
     
@@ -77,18 +94,20 @@ with col2:
     
     # 联系信息
     st.markdown("### 联系方式")
+    contact_info = []
     if st.session_state.phone:
-        st.write(f"📱 电话: {st.session_state.phone}")
+        contact_info.append(f"📱 电话: {st.session_state.phone}")
     if st.session_state.email:
-        st.write(f"📧 邮箱: {st.session_state.email}")
+        contact_info.append(f"📧 邮箱: {st.session_state.email}")
     if education:
-        st.write(f"🎓 学历: {education}")
+        contact_info.append(f"🎓 学历: {education}")
     if work_experience > 0:
-        st.write(f"💼 工作经验: {work_experience} 年")
-    
-    # 显示期望薪资
+        contact_info.append(f"💼 工作经验: {work_experience} 年")
     if st.session_state.salary_range[0] > 0 or st.session_state.salary_range[1] > 0:
-        st.write(f"💰 期望薪资: {st.session_state.salary_range[0]} - {st.session_state.salary_range[1]} 元/月")
+        contact_info.append(f"💰 期望薪资: {st.session_state.salary_range[0]} - {st.session_state.salary_range[1]} 元/月")
+    
+    for info in contact_info:
+        st.write(info)
     
     # 专业技能
     if st.session_state.skills:
