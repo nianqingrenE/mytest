@@ -27,8 +27,7 @@ if 'ind' not in st.session_state:
 st.title("音乐")
 
 # 显示当前图片和描述
-current_img = image_ua[st.session_state['ind']]
-st.image(current_img['url'], caption=current_img['text'], use_column_width=True)
+st.audio(audio_file)
 
 # 定义“上一张”功能
 def prevImg():
@@ -44,5 +43,6 @@ with col1:
     st.button('上一张', use_container_width=True, on_click=prevImg)
 with col2:
     st.button('下一张', use_container_width=True, on_click=nextImg)
+
 
 
