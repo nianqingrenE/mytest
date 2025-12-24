@@ -39,18 +39,13 @@ st.title(video_arr[st.session_state['ind']]['title'])
 st.video(video_arr[st.session_state['ind']]['url'])
 
 # 创建水平排列的按钮栏（每个按钮占一列）
-# 使用st.columns创建与视频数量相同的列
 cols = st.columns(len(video_arr))
 
 # 为每个视频集数创建按钮
 for i, col in enumerate(cols):
-    # 将按钮放入当前列中
     with col:
-        # 创建按钮，显示"第X集"文本
-        # on_click: 点击时触发playVideo函数
-        # args: 传递当前索引i作为参数
         st.button(
             f"第{i+1}集", 
             on_click=playVideo, 
-            args=[i]  # 传递索引参数
-
+            args=[i]
+        )
