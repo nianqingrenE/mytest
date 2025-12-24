@@ -1,6 +1,5 @@
 import streamlit as st
 from PIL import Image
-import io
 
 # 设置页面配置
 st.set_page_config(page_title="个人简历生成器", layout="wide")
@@ -21,6 +20,8 @@ if 'personal_intro' not in st.session_state:
     st.session_state.personal_intro = ""
 if 'skills' not in st.session_state:
     st.session_state.skills = []
+if 'salary_range' not in st.session_state:
+    st.session_state.salary_range = (0, 0)
 
 # 创建两列布局
 col1, col2 = st.columns([1, 2])
@@ -42,6 +43,14 @@ with col1:
     )
     
     work_experience = st.slider("工作经验（年）", 0, 30, 0)
+    
+    # 添加薪资范围滑块（与工作经验滑块风格一致）
+    st.session_state.salary_range = st.slider(
+        "期望薪资范围（元/月）",
+        0, 100000, (5000, 20000),
+        step=1000,
+        format="%d元"
+    )
     
     st.session_state.personal_intro = st.text_area("个人简介", height=150)
     
@@ -76,6 +85,10 @@ with col2:
         st.write(f"🎓 学历: {education}")
     if work_experience > 0:
         st.write(f"💼 工作经验: {work_experience} 年")
+    
+    # 显示期望薪资
+    if st.session_state.salary_range[0] > 0 or st.session_state.salary_range[1] > 0:
+        st.write(f"💰 期望薪资: {st.session_state.salary_range[0]} - {st.session_state.salary_range[1]} 元/月")
     
     # 专业技能
     if st.session_state.skills:
