@@ -1,21 +1,21 @@
 import streamlit as st
 
-# 设置网页标题为“动物相册网站”
-st.set_page_config(page_title="动物相册网站", page_icon="🐾")
+# 设置网页标题为“音乐”
+st.set_page_config(page_title="音乐", page_icon="🐾")
 
 # 你的动物图片列表（包含图片链接和描述）
 image_ua = [
     {
-        'url': 'https://cdn.britannica.com/73/9173-050-9D9EA4BA.jpg',
-        'text': '鱼'
+        'audio_file = 'https://music.163.com/song/media/outer/url?id=188204.mp3'',
+        'text': '沉默是金'
     },
     {
-        'url': 'https://img95.699pic.com/photo/60059/3325.jpg_wh300.jpg',
-        'text': '鸟'
+        'audio_file = 'https://music.163.com/song/media/outer/url?id=65766.mp3'',
+        'text': '富士山下'
     },
     {
-        'url': 'https://www.baltana.com/files/wallpapers-2/Cute-Cat-Images-07756.jpg',
-        'text': '猫'
+        'audio_file = 'https://music.163.com/song/media/outer/url?id=115502.mp3'',
+        'text': '红日'
     }
 ]
 
@@ -24,7 +24,7 @@ if 'ind' not in st.session_state:
     st.session_state['ind'] = 0
 
 # 页面标题
-st.title("动物相册网站")
+st.title("音乐")
 
 # 显示当前图片和描述
 current_img = image_ua[st.session_state['ind']]
@@ -44,4 +44,5 @@ with col1:
     st.button('上一张', use_container_width=True, on_click=prevImg)
 with col2:
     st.button('下一张', use_container_width=True, on_click=nextImg)
+
 
