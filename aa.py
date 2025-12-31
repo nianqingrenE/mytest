@@ -12,6 +12,16 @@ import requests
 from io import BytesIO
 import platform
 
+# ================ GitHub 仓库配置 ================
+# 请修改以下三行为您自己的GitHub信息
+GITHUB_USER = "your_github_username"  # 替换为您的GitHub用户名
+GITHUB_REPO = "your_repository_name"  # 替换为您的仓库名
+GITHUB_BRANCH = "main"  # 替换为您的分支名（通常是main或master）
+
+# 构建GitHub raw URL的函数
+def get_github_raw_url(filename):
+    return f"https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/{GITHUB_BRANCH}/{filename}"
+
 # ============== 关键修复：设置中文字体支持 ==============
 def setup_chinese_font():
     """设置中文字体以解决方框问题"""
@@ -99,32 +109,44 @@ labels = get_labels(use_chinese)
 # 设置页面配置
 st.set_page_config(page_title="学生成绩分析与预测系统", layout="wide")
 
-# 加载预训练模型
+# 从GitHub加载预训练模型
 @st.cache_resource
 def load_trained_model():
     try:
-        model_path = r'D:\streamlit_env\student_performance_model.pkl'
-        if not os.path.exists(model_path):
-            st.error(f"未找到模型文件: {model_path}")
-            st.info("请确保已运行模型训练脚本并保存模型到指定位置")
+        # 从GitHub获取模型
+        model_url = get_github_raw_url("student_performance_model.pkl")
+        st.info(f"正在从GitHub加载模型: {model_url}")
+        
+        response = requests.get(model_url, timeout=30)
+        
+        if response.status_code == 200:
+            model = joblib.load(BytesIO(response.content))
+            st.success("✅ 成功从GitHub加载预训练模型")
+            return model
+        else:
+            st.error(f"无法从GitHub下载模型，状态码: {response.status_code}")
+            st.info("请检查GitHub仓库配置是否正确，或模型文件是否存在")
             return None
         
-        model = joblib.load(model_path)
-        st.success("✅ 成功加载预训练模型")
-        return model
     except Exception as e:
         st.error(f"加载模型时出错: {str(e)}")
         st.exception(e)
+        st.info("请确保student_performance_model.pkl文件已上传到您的GitHub仓库")
         return None
 
-# 加载数据 - 修改为使用 student_data.csv
+# 从GitHub加载数据
 @st.cache_data
 def load_data():
     try:
-        data_file = 'student_data.csv'
-        if os.path.exists(data_file):
+        # 从GitHub获取数据
+        data_url = get_github_raw_url("student_data.csv")
+        st.info(f"正在从GitHub加载数据: {data_url}")
+        
+        response = requests.get(data_url, timeout=30)
+        
+        if response.status_code == 200:
             # 读取CSV文件，没有列名，需要指定
-            df = pd.read_csv(data_file, header=None)
+            df = pd.read_csv(BytesIO(response.content), header=None)
             
             # 检查列数
             if df.shape[1] < 8:
@@ -164,7 +186,7 @@ def load_data():
             st.success(f"✅ 成功加载 {len(df)} 条有效学生记录")
             return df
         else:
-            st.warning("⚠️ 数据文件未找到，使用模拟数据")
+            st.warning(f"⚠️ 无法从GitHub下载数据文件 (状态码: {response.status_code})，使用模拟数据")
             return generate_sample_data()
     except Exception as e:
         st.error(f"加载数据时出错: {e}")
@@ -325,7 +347,24 @@ def plot_attendance_rates(major_stats):
     plt.tight_layout()
     return fig
 
-# 获取默认图片（当本地图片不存在时）
+# 从GitHub加载图片
+def load_image_from_github(filename, caption):
+    try:
+        img_url = get_github_raw_url(filename)
+        response = requests.get(img_url, timeout=10)
+        
+        if response.status_code == 200:
+            img = Image.open(BytesIO(response.content))
+            st.image(img, caption=caption, use_container_width=True)
+            return img
+        else:
+            st.warning(f"无法加载图片 {filename}，状态码: {response.status_code}")
+            return None
+    except Exception as e:
+        st.warning(f"无法加载图片 {filename}: {str(e)}")
+        return None
+
+# 获取默认图片（当GitHub图片不存在时）
 def get_default_image():
     # 使用一个简单的占位图
     fig, ax = plt.subplots(figsize=(8, 4))
@@ -413,19 +452,12 @@ def main():
         else:
             st.header("🖼️ System Interface")
         
-        # 尝试加载首页图片，如果不存在则使用默认图片
-        try:
-            if os.path.exists("首页.png"):
-                st.image("首页.png", caption="系统主界面" if use_chinese else "System Main Interface", use_container_width=True)
-            else:
-                st.warning("⚠️ 本地首页.png文件不存在，使用默认图片" if use_chinese else "⚠️ Local homepage.png file not found, using default image")
-                default_img = get_default_image()
-                st.image(default_img, caption="系统主界面 (默认图片)" if use_chinese else "System Interface (Default)", use_container_width=True)
-        except Exception as e:
-            st.warning(f"无法加载图片: {str(e)}" if use_chinese else f"Cannot load image: {str(e)}")
-            st.info("系统正在使用备用界面" if use_chinese else "System is using backup interface")
+        # 从GitHub加载首页图片
+        homepage_img = load_image_from_github("首页.png", "系统主界面" if use_chinese else "System Main Interface")
+        if homepage_img is None:
+            st.info("使用默认界面" if use_chinese else "Using default interface")
             default_img = get_default_image()
-            st.image(default_img, caption="系统主界面 (备用图片)" if use_chinese else "System Interface (Backup)", use_container_width=True)
+            st.image(default_img, caption="系统主界面 (默认图片)" if use_chinese else "System Interface (Default)", use_container_width=True)
         
         if use_chinese:
             st.header("📋 项目概述")
@@ -810,11 +842,8 @@ def main():
                     else:
                         result_text = f"🎉 Predicted Final Score: {predicted_score}"
                         message = "Congratulations! The prediction shows you will pass!"
-                    # 尝试加载通过.png，如果不存在则使用默认图片
-                    if os.path.exists("通过.png") and use_chinese:
-                        result_image = "通过.png"
-                    else:
-                        result_image = None
+                    # 从GitHub加载通过图片
+                    result_image = load_image_from_github("通过.png", message)
                 else:
                     result_color = "#FF6B6B"
                     if use_chinese:
@@ -823,11 +852,8 @@ def main():
                     else:
                         result_text = f"💡 Predicted Final Score: {predicted_score}"
                         message = "Keep working! There's room for improvement, keep trying!"
-                    # 尝试加载加油.png，如果不存在则使用默认图片
-                    if os.path.exists("加油.png") and use_chinese:
-                        result_image = "加油.png"
-                    else:
-                        result_image = None
+                    # 从GitHub加载加油图片
+                    result_image = load_image_from_github("加油.png", message)
                 
                 # 显示条幅
                 st.markdown(f"""
@@ -836,11 +862,8 @@ def main():
                 </div>
                 """, unsafe_allow_html=True)
                 
-                # 显示图片（如果存在）
-                if result_image and os.path.exists(result_image):
-                    st.image(result_image, caption=message, use_container_width=True)
-                else:
-                    # 创建简单的成功/鼓励图片
+                # 如果加载GitHub图片失败，使用默认图片
+                if result_image is None:
                     result_img = create_result_image(predicted_score >= 60)
                     st.image(result_img, caption=message, use_container_width=True)
                 
